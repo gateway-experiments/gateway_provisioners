@@ -144,7 +144,7 @@ Must be one of "round-robin" or "least-connection".  (GP_LOAD_BALANCING_ALGORITH
         """
         self.kernel_log = None
         env_dict = kwargs.get("env", {})
-        self.assigned_host = self._determine_next_host(env_dict)
+        self.assigned_host = await self.determine_next_host(env_dict)
         self.ip = gethostbyname(self.assigned_host)  # convert to ip if host is provided
         self.assigned_ip = self.ip
 
@@ -291,8 +291,14 @@ Must be one of "round-robin" or "least-connection".  (GP_LOAD_BALANCING_ALGORITH
                 startup_cmd += f" {arg}"
 
             startup_cmd += f" >> {self.kernel_log} 2>&1 & echo $!"  # return the process id
-
         return startup_cmd
+
+    async def determine_next_host(self, env_dict: dict) -> str:
+        """
+        This is a placeholder function which can be overridden to implement
+        custom logic to determine next host.
+        """
+        return self._determine_next_host(env_dict)
 
     def _determine_next_host(self, env_dict: dict) -> str:
         """Simple round-robin index into list of hosts."""
