@@ -11,7 +11,7 @@ from typing import Any
 import urllib3  # docker ends up using this and it causes lots of noise, so turn off warnings
 from jupyter_client import localinterfaces
 from overrides import overrides
-from traitlets import Unicode, default
+from traitlets import Unicode
 
 from .remote_provisioner import RemoteProvisionerBase
 
@@ -43,10 +43,6 @@ class ContainerProvisionerBase(RemoteProvisionerBase):
 (GP_IMAGE_NAME env var)""",
     )
 
-    @default("image_name")
-    def _image_name_default(self):
-        return os.getenv(self.image_name_env)
-
     executor_image_name_env = "GP_EXECUTOR_IMAGE_NAME"
     executor_image_name = Unicode(
         None,
@@ -56,13 +52,13 @@ class ContainerProvisionerBase(RemoteProvisionerBase):
 container-based kernels within Spark environments. (GP_EXECUTOR_IMAGE_NAME env var)""",
     )
 
-    @default("executor_image_name")
-    def _executor_image_name_default(self):
-        return os.getenv(self.executor_image_name_env) or self.image_name
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self.image_name = os.getenv(self.image_name_env) or self.image_name
+        self.executor_image_name = (
+            os.getenv(self.executor_image_name_env) or self.executor_image_name or self.image_name
+        )
         self.container_name = None
         self.assigned_node_ip = None
 
