@@ -37,7 +37,7 @@ class DockerSpecInstaller(BaseSpecApp):
     # Note that the left justification of the second example is necessary to ensure proper
     # alignment with the first example during --help output.
     examples = """
-    jupyter-docker-spec install --language=R --kernel-name=r_docker --image_name=foo/my_r_kernel_image:v4_0
+    jupyter-docker-spec install --language=R --kernel-name=r_docker --image-name=foo/my_r_kernel_image:v4_0
 
 jupyter-docker-spec install --swarm --kernel-name=python_swarm
     """
